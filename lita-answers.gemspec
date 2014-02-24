@@ -3,9 +3,10 @@ Gem::Specification.new do |spec|
   spec.version       = "0.0.1"
   spec.authors       = ["Sergey Alekseev"]
   spec.email         = ["sergey.alekseev.minsk@gmail.com"]
-  spec.description   = %q{TODO: Add a description}
-  spec.summary       = %q{TODO: Add a summary}
-  spec.homepage      = "TODO: Add a homepage"
+  spec.description   = "A Lita handler for a question answering (QA) system. Allows you to use CRUD operations." \
+                       "More functionality is coming soon..."
+  spec.summary       = %q{A Lita handler for a question answering (QA) system}
+  spec.homepage      = "https://github.com/sergey-alekseev/lita-answers"
   spec.license       = "MIT"
   spec.metadata      = { "lita_plugin_type" => "handler" }
 
@@ -21,4 +22,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", ">= 2.14"
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "coveralls"
+  spec.add_development_dependency 'pry'
 end
