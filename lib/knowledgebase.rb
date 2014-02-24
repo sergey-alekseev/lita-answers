@@ -1,7 +1,4 @@
-require 'pry'
-
 class Knowledgebase
-  REDIS_NAMESPACE = 'handlers:answers'
   REDIS_KEY = 'knowledgebase'
 
   class << self
@@ -25,8 +22,18 @@ class Knowledgebase
       redis.hdel(REDIS_KEY, question)
     end
 
-    def redis
-      @redis ||= Redis::Namespace.new(REDIS_NAMESPACE, redis: Lita.redis)
+    def exists?(question)
+      redis.hexists(REDIS_KEY, question)
     end
+
+    def redis
+      @redis ||= Redis::Namespace.new(redis_namespace, redis: Lita.redis)
+    end
+
+    private
+
+      def redis_namespace
+        ENV['env'] == 'test' ? 'handlers:answers:test' : 'handlers:answers'
+      end
   end
 end

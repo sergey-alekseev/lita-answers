@@ -40,4 +40,15 @@ describe Knowledgebase do
       expect(subject.read(question)).to be_nil
     end
   end
+
+  describe '.exists?(question)' do
+    it 'returns true if question exists' do
+      expect(subject.exists?(question)).to be_true
+    end
+
+    it "returns false if question does not exist" do
+      subject.destroy(question)
+      expect(subject.exists?(question)).to be_false
+    end
+  end
 end

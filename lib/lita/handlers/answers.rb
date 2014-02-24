@@ -1,5 +1,4 @@
 require 'lita'
-require 'pry'
 
 module Lita
   module Handlers
@@ -28,36 +27,60 @@ module Lita
       })
 
       def index(response)
-        reply = "You could ask me the following questions:"
         questions = Knowledgebase.all
-        questions.map.with_index do |question, index|
-          reply << "\n#{index+1}) #{question}"
+        if questions.any?
+          reply = "You could ask me the following questions:"
+          questions.map.with_index do |question, index|
+            reply << "\n#{index+1}) #{question}"
+          end
+        else
+          reply = "There are no questions yet! " \
+                  "Use REMEMBER 'question?' WITH 'answer.' syntax for creating questions!\n" \
+                  "For more info see: help remember."
         end
         response.reply(reply)
       end
 
       def create(response)
         question, answer = response.matches.first
-        Knowledgebase.create(question, answer)
-        response.reply("The answer for '#{question}' is '#{answer}'")
+        if Knowledgebase.exists?(question)
+          answer = Knowledgebase.read(question)
+          reply = "Use CHANGE 'question?' TO 'new answer.' syntax for existing questions! " \
+                  "For more info see: help change.\n" \
+                  "The answer for '#{question}' is still '#{answer}'"
+        else
+          Knowledgebase.create(question, answer)
+          reply = "The answer for '#{question}' is '#{answer}'"
+        end
+        response.reply(reply)
       end
 
       def show(response)
         question = response.matches.first
-        answer = Knowledgebase.read(question)
-        response.reply(answer)
+        reply = Knowledgebase.read(question) || 'There is no such a question! Use ALL QUESTIONS command.'
+        response.reply(reply)
       end
 
       def update(response)
         question, new_answer = response.matches.first
-        Knowledgebase.update(question, new_answer)
-        response.reply("The new answer for '#{question}' is '#{new_answer}'.")
+        if Knowledgebase.exists?(question)
+          Knowledgebase.update(question, new_answer)
+          reply = "The new answer for '#{question}' is '#{new_answer}'."
+        else
+          reply = 'There is no such a question! Use ALL QUESTIONS command.'
+        end
+        response.reply(reply)
       end
 
       def destroy(response)
         question = response.matches.first[0]
-        Knowledgebase.destroy(question)
-        response.reply("Forgot '#{question}'")
+        if Knowledgebase.exists?(question)
+          Knowledgebase.destroy(question)
+          reply = "Forgot '#{question}'"
+        else
+          reply = 'There is no such a question! Use ALL QUESTIONS command.'
+        end
+        response.reply(reply)
       end
     end
 
