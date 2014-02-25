@@ -3,12 +3,12 @@ require 'lita'
 module Lita
   module Handlers
     class Answers < Handler
-      TEXT = /[\w\s\,\.\-–]+/
+      TEXT = /[\w\s\,\.\-\/:–]+/
       QUESTION = /(?:'|")(#{TEXT.source}\?)(?:'|")/
       ANSWER = /(?:'|")(#{TEXT.source}\.?)(?:'|")/
 
       route(/^all\squestions$/i, :index, command: true, help: {
-        "all questions" => "You could ask me the following questions:\n1) ...\n2) ..."
+        "all questions" => "You could ask me the following questions: 1) ... 2) ..."
       })
 
       route(/^remember\s#{QUESTION.source}\swith\s#{ANSWER.source}$/i, :create, command: true, help: {
