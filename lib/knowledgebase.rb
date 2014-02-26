@@ -1,4 +1,5 @@
 class Knowledgebase
+  REDIS_NAMESPACE = 'handlers:answers'
   REDIS_KEY = 'knowledgebase'
 
   class << self
@@ -27,13 +28,7 @@ class Knowledgebase
     end
 
     def redis
-      @redis ||= Redis::Namespace.new(redis_namespace, redis: Lita.redis)
+      @redis ||= Redis::Namespace.new(REDIS_NAMESPACE, redis: Lita.redis)
     end
-
-    private
-
-      def redis_namespace
-        ENV['env'] == 'test' ? 'handlers:answers:test' : 'handlers:answers'
-      end
   end
 end

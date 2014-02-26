@@ -36,7 +36,7 @@ module Lita
           end
         else
           reply = "There are no questions yet! " \
-                  "Use REMEMBER 'question?' WITH 'answer.' syntax for creating questions!\n" \
+                  "Use REMEMBER 'question?' WITH 'answer.' syntax for creating questions.\n" \
                   "For more info see: help remember."
         end
         response.reply(reply)
@@ -57,8 +57,17 @@ module Lita
       end
 
       def show(response)
-        question = response.matches.first
-        reply = Knowledgebase.read(question) || 'There is no such a question! Use ALL QUESTIONS command.'
+        question = response.matches.first[0]
+        reply = Knowledgebase.read(question) || begin
+          closest_question = Nlp.closest_sentence(question, Knowledgebase.all)
+          if closest_question.nil?
+            no_such_question
+          else
+            "Found the closest question to your question: '#{closest_question}'. " \
+            "Use REMEMBER 'question?' WITH 'answer.' syntax for creating questions.\n" \
+            "For more info see: help remember."
+          end
+        end
         response.reply(reply)
       end
 
@@ -68,7 +77,7 @@ module Lita
           Knowledgebase.update(question, new_answer)
           reply = "The new answer for '#{question}' is '#{new_answer}'."
         else
-          reply = 'There is no such a question! Use ALL QUESTIONS command.'
+          reply = no_such_question
         end
         response.reply(reply)
       end
@@ -79,10 +88,16 @@ module Lita
           Knowledgebase.destroy(question)
           reply = "Forgot '#{question}'"
         else
-          reply = 'There is no such a question! Use ALL QUESTIONS command.'
+          reply = no_such_question
         end
         response.reply(reply)
       end
+
+      private
+
+        def no_such_question
+          'There is no such a question! Use ALL QUESTIONS command.'
+        end
     end
 
     Lita.register_handler(Answers)

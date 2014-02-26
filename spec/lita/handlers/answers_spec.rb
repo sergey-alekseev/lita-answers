@@ -39,7 +39,7 @@ describe Lita::Handlers::Answers, lita_handler: true do
           send_command "forget '#{question}'"
           send_command 'all questions'
           expect(replies.last).to eq("There are no questions yet! " \
-                                     "Use REMEMBER 'question?' WITH 'answer.' syntax for creating questions!\n" \
+                                     "Use REMEMBER 'question?' WITH 'answer.' syntax for creating questions.\n" \
                                      "For more info see: help remember.")
         end
       end
@@ -49,6 +49,13 @@ describe Lita::Handlers::Answers, lita_handler: true do
       it 'answers the question' do
         send_command "answer '#{question}'"
         expect(replies.last).to eq(answer)
+      end
+
+      it 'answers with the suggestion to use the closest question' do
+        send_command "answer '#{close_question}'"
+        expect(replies.last).to eq("Found the closest question to your question: '#{question}'. " \
+                                   "Use REMEMBER 'question?' WITH 'answer.' syntax for creating questions.\n" \
+                                   "For more info see: help remember.")
       end
 
       it_behaves_like 'absent question', "answer 'abrakadabra?'"
