@@ -7,6 +7,11 @@ module Lita
       QUESTION = /(?:'|")(#{TEXT.source}\?)(?:'|")/
       ANSWER = /(?:'|")(#{TEXT.source}\.?)(?:'|")/
 
+
+      route(/^(\w+)([\.#]|::)?(\w+)?$/, :documentation, command: true, help: {
+        "Array#map" => "# Array#map\n\n(from ruby core)\n---\n    ary.collect { |item| block }  -> new_ary\n..."
+      })
+
       route(/^all\squestions$/i, :index, command: true, help: {
         "all questions" => "You could ask me the following questions: 1) ... 2) ..."
       })
@@ -26,6 +31,12 @@ module Lita
       route(/^forget\s#{QUESTION.source}$/i, :destroy, command: true, help: {
         "forget 'question?'" => "Forgot 'question?'"
       })
+
+      def documentation(response)
+        question = response.matches.join
+        reply = RubyDocs::Documentation.search(question)
+        response.reply(reply)
+      end
 
       def index(response)
         questions = Knowledgebase.all

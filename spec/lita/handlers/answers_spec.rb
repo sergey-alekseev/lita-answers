@@ -9,6 +9,16 @@ describe Lita::Handlers::Answers, lita_handler: true do
     it { routes_command("answer 'question?'").to :show }
     it { routes_command("forget 'question?'").to :destroy }
     it { routes_command("all questions").to :index }
+    it { routes_command("Array#map").to :documentation }
+  end
+
+  describe '#documentation' do
+    it 'displays documentation from RubyDocs.org' do
+      documentation_content = "# Array#map\n\n(from ruby core)\n---\n    ary.collect { |item| block }  -> new_ary\n..."
+      Net::HTTP.stub(:get_response).and_return double(body: { 'content' => documentation_content }.to_json)
+      send_command 'Array#map'
+      expect(replies.last).to eq(documentation_content)
+    end
   end
 
   describe 'commands' do
