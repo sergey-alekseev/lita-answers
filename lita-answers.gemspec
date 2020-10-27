@@ -2,7 +2,7 @@ Gem::Specification.new do |spec|
   spec.name          = "lita-answers"
   spec.version       = "0.0.2"
   spec.authors       = ["Sergey Alekseev"]
-  spec.email         = ["sergey.alekseev.minsk@gmail.com"]
+  spec.email         = ["code+litaanswers@sergeyalekseev.com"]
   spec.description   = "A Lita handler for a question answering (QA) system. Allows you to use CRUD operations and simple NLP. " \
                        "More functionality is coming soon..."
   spec.summary       = %q{A Lita handler for a question answering (QA) system}
